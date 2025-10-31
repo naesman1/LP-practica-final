@@ -13,6 +13,11 @@ REQUESTS = Counter('server_requests_total', 'Total number of requests to this we
 HEALTHCHECK_REQUESTS = Counter('healthcheck_requests_total', 'Total number of requests to healthcheck')
 MAIN_ENDPOINT_REQUESTS = Counter('main_requests_total', 'Total number of requests to main endpoint')
 
+# --- MODIFICATION: Add new counter for the /bye endpoint ---
+BYE_ENDPOINT_REQUESTS = Counter('bye_requests_total', 'Total number of requests to bye endpoint')
+# --- END OF MODIFICATION ---
+
+
 class SimpleServer:
     """
     SimpleServer class define FastAPI configuration and implemented endpoints
@@ -32,7 +37,7 @@ class SimpleServer:
     @app.get("/health")
     async def health_check():
         """Implement health check endpoint"""
-        # Increment counter used for register the total number of calls in the webserver
+        # Increment counter used for register the total number of calls in the webserver
         REQUESTS.inc()
         # Increment counter used for register the requests to healtcheck endpoint
         HEALTHCHECK_REQUESTS.inc()
@@ -41,8 +46,19 @@ class SimpleServer:
     @app.get("/")
     async def read_main():
         """Implement main endpoint"""
-        # Increment counter used for register the total number of calls in the webserver
+        # Increment counter used for register the total number of calls in the webserver
         REQUESTS.inc()
         # Increment counter used for register the total number of calls in the main endpoint
         MAIN_ENDPOINT_REQUESTS.inc()
         return {"msg": "Hello World"}
+
+    # --- MODIFICATION: Add new /bye endpoint ---
+    @app.get("/bye")
+    async def read_bye():
+        """Implement bye endpoint"""
+        # Increment counter used for register the total number of calls in the webserver
+        REQUESTS.inc()
+        # Increment counter used for register the total number of calls in the bye endpoint
+        BYE_ENDPOINT_REQUESTS.inc()
+        return {"msg": "Bye Bye"}
+    # --- END OF MODIFICATION ---
