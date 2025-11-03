@@ -1,0 +1,47 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: simple-server-cpu-alert
+  namespace: monitoring
+  # 1. ¡MUY IMPORTANTE! Esta etiqueta le dice al Prometheus Operator
+  #    que "adopte" esta regla.
+  labels:
+    release: prometheus # Coincide con el nombre de nuestro 'helm install'
+spec:
+  groups:
+  - name: simple-server-rules
+    rules:
+    # -----------------------------------------------------------------
+    # Esta es la alerta que pide la práctica:
+    # "Uso de CPU de un contenedor mayor al del límite configurado"
+    # -----------------------------------------------------------------
+    - alert: HighCpuUsage
+      # La 'expresión' (expr) es el corazón de la alerta.
+      # Mide el % de uso de CPU (container_cpu_usage_seconds_total)
+      # relativo al 'límite' (kube_pod_container_resource_limits{resource="cpu"})
+      # que definimos en nuestro deployment.yml (el "200m")
+      expr: |
+        (
+          sum(rate(container_cpu_usage_seconds_total{
+            namespace="default",
+            pod=~"simple-server-deployment-.*"  # <-- ESTA ES LA LÍNEA CORREGIDA
+          }[5m]))
+        /
+          sum(kube_pod_container_resource_limits{
+            resource="cpu",
+            container="simple-server",
+            namespace="default"
+          })
+        ) * 100 > 80
+      
+      # Duración: La condición debe ser verdadera por 1 minuto antes de dispararse
+      for: 1m
+      
+      # Etiquetas: ¡Aquí es donde le decimos a Alertmanager que es 'CRITICAL'!
+      labels:
+        severity: 'critical' # <-- Esto coincide con nuestra ruta en alertmanager.yaml
+      
+      # Anotaciones: Este es el mensaje que se enviará a Slack
+      annotations:
+        description: 'El contenedor {{ $labels.container }} en el pod {{ $labels.pod }} ha estado usando más del 80% de su CPU limitada (límite: 200m) durante 1 minuto.'
+        summary: 'Uso de CPU alto detectado en simple-server'

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-server-service
+  labels:
+    app: simple-server # Etiqueta clave
+spec:
+  selector:
+    app: simple-server # Coincide con las etiquetas del Deployment
+  ports:
+    # 1. Exponemos el puerto de la API
+    - name: http-api
+      port: 8081
+      targetPort: http-api
+    # 2. Exponemos el puerto de Métricas (este es el que usará Prometheus)
+    - name: http-metrics
+      port: 8000
+      targetPort: http-metrics

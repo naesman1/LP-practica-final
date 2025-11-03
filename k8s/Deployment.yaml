@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-server-deployment
+  labels:
+    app: simple-server # Etiqueta clave
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-server # Coincide con las etiquetas del Pod
+  template:
+    metadata:
+      labels:
+        app: simple-server # Etiqueta clave
+    spec:
+      # 1. Usamos el secreto que acabamos de crear para descargar la imagen
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: simple-server
+          # 2. Reemplaza 'naesman1/lp-practica-final' si tu repo se llama diferente
+          image: ghcr.io/naesman1/lp-practica-final:latest
+          ports:
+            - containerPort: 8081
+              name: http-api
+            - containerPort: 8000
+              name: http-metrics
+          # 3. Requisito de la Práctica: Añadir límites de CPU
+          #    Definimos un 'request' pequeño para poder probar la alerta de CPU
+          resources:
+            requests:
+              cpu: "100m" # 0.1 de un vCPU
+            limits:
+              cpu: "200m" # 0.2 de un vCPU

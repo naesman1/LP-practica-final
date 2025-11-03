@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: simple-server-servicemonitor
+  # 1. ¡MUY IMPORTANTE! Esta etiqueta le dice al Prometheus Operator
+  #    (que instalamos con Helm) que "adopte" esta regla.
+  labels:
+    release: prometheus # Coincide con el nombre de nuestro 'helm install'
+spec:
+  selector:
+    # 2. Selecciona el Service que creamos arriba (el que tiene la etiqueta 'app: simple-server')
+    matchLabels:
+      app: simple-server
+  endpoints:
+    # 3. Le dice a Prometheus que raspe el puerto llamado 'http-metrics'
+    - port: http-metrics
+      # 4. Le dice a Prometheus que busque métricas en la ruta / (nuestra app expone en /)
+      #    Si tu app expusiera en /metrics, cambiarías esto.
+      path: /
+      # 5. Raspar cada 15 segundos
+      interval: 15s
