@@ -28,28 +28,23 @@ Este documento sirve como una guía completa para que cualquier usuario pueda co
 
 ---
 
-## 📚 Tabla de contenidos
-
 ## 📚 Tabla de Contenidos
 
 - [🧭 Descripción General](#-descripción-general)
 - [🏗️ Arquitectura de la Solución](#️-arquitectura-de-la-solución)
 - [🧩 Guía de Reproducción y Entregables](#-guía-de-reproducción-y-entregables)
   - [⚙️ Pre-requisitos y Configuración del Entorno](#️-pre-requisitos-y-configuración-del-entorno)
-    - [Opción A: Entorno Windows (WSL 2) - Recomendado](#opción-a-entorno-windows-wsl-2---recomendado)
-    - [Opción B: Entorno Ubuntu Nativo (o VM)](#opción-b-entorno-ubuntu-nativo-o-vm)
-    - [Instalación de Herramientas CLI (Común para ambos entornos)](#instalación-de-herramientas-cli-común-para-ambos-entornos)
-  - [📦 Clonar y Preparar el Proyecto](#-clonar-y-preparar-el-proyecto)
-  - [🧠 Modificaciones de la Aplicación](#-modificaciones-de-la-aplicación)
-  - [🧪 Pipeline de CI/CD (GitHub Actions)](#-pipeline-de-cicd-github-actions)
-  - [☸️ Despliegue en Kubernetes](#️-despliegue-en-kubernetes)
-  - [🔬 Verificación del Monitoreo (Prometheus)](#-verificación-del-monitoreo-prometheus)
-  - [🔔 Configuración de Alertas (Prometheus + Slack)](#-configuración-de-alertas-prometheus--slack)
-  - [📊 Dashboard de Grafana](#-dashboard-de-grafana)
+  - [Opción A: Entorno Windows (WSL 2) - Recomendado](#opción-a-entorno-windows-wsl-2---recomendado)
+  - [Opción B: Entorno Ubuntu Nativo (o VM)](#opción-b-entorno-ubuntu-nativo-o-vm)
+  - [🔧 Instalación de herramientas CLI comunes (Minikube, kubectl, Helm, GitHub CLI)](#-instalación-de-herramientas-cli-comunes-minikube-kubectl-helm-github-cli)
+- [📦 Clonar y preparar el proyecto](#-clonar-y-preparar-el-proyecto)
+- [🧠 Modificaciones de la Aplicación](#-modificaciones-de-la-aplicación)
+- [🧪 Pipeline de CI/CD (GitHub Actions)](#-pipeline-de-cicd-github-actions)
+- [☸️ Despliegue en Kubernetes](#️-despliegue-en-kubernetes)
+- [🔬 Verificación del Monitoreo (Prometheus)](#-verificación-del-monitoreo-prometheus)
+- [🔔 Configuración de Alertas (Prometheus + Slack)](#-configuración-de-alertas-prometheus--slack)
 - [📷 Galería de Resultados](#-galería-de-resultados)
 - [🧾 Créditos](#-créditos)
-
-
 ---
 
 ## 🏗️ Arquitectura de la Solución
@@ -67,7 +62,7 @@ El flujo de trabajo implementado es el siguiente:
 
 A continuación se detallan los pasos para reproducir la solución completa.
 
-### 1. ⚙️ Pre-requisitos y Configuración del Entorno
+### ⚙️ Pre-requisitos y Configuración del Entorno
 
 Esta guía ofrece dos caminos para la configuración de Docker. Los pasos 1.3, 1.4, 1.5 y 1.6 son comunes para ambos entornos.
 
@@ -75,7 +70,7 @@ Esta guía ofrece dos caminos para la configuración de Docker. Los pasos 1.3, 1
 
 ### Opción A: Entorno Windows (WSL 2) - Recomendado
 
-#### 1.1. Instalar WSL 2 y Ubuntu
+####  Instalar WSL 2 y Ubuntu
 
 Abre una terminal de PowerShell o CMD como Administrador:
 
@@ -84,7 +79,7 @@ wsl --install
 ```
 ⚠️ Reinicia tu PC. Luego abre "Ubuntu" desde el menú de inicio y completa la configuración inicial.
 
-#### 1.2. Instalar Docker Desktop
+#### Instalar Docker Desktop
 
 Descarga desde docker.com y asegúrate de activar:
 - ✅ "Use WSL 2 instead of Hyper-V"
@@ -93,7 +88,7 @@ Descarga desde docker.com y asegúrate de activar:
 
 ### Opción B: Entorno Ubuntu Nativo (o VM)
 
-#### 1.2. Instalar Docker Engine
+#### Instalar Docker Engine
 
 ```Bash
 sudo apt update
@@ -105,7 +100,7 @@ sudo usermod -aG docker $USER
 ### 🔧 Instalación de herramientas CLI comunes (Minikube, kubectl, Helm, GitHub CLI)
 
 
-#### 1.3. Instalar Herramientas CLI (Común para ambos entornos)
+####  Instalar Herramientas CLI (Común para ambos entornos)
 
 Abre tu terminal de Ubuntu (ya sea WSL o Nativo) para instalar las siguientes herramientas:
 
@@ -140,7 +135,7 @@ sudo apt update
 sudo apt install gh -y
 ```
 
-#### 1.4. Autenticación CLI de GitHub (gh)
+#### Autenticación CLI de GitHub (gh)
 
 Esto es necesario para que `gh` pueda autenticarte y tengas permisos de workflow
 
@@ -151,7 +146,7 @@ gh auth login
 - workflow (para subir pipelines)
 - write:packages (para subir imágenes Docker/GHCR)
 
-#### 1.5. Autenticación del Motor de Docker (docker login)
+####  Autenticación del Motor de Docker (docker login)
 
 Esto es necesario para que `kubectl` pueda descargar la imagen desde GHCR.
 A. Generar un `PAT` en `GitHub`
@@ -168,7 +163,7 @@ docker login ghcr.io
 - Password: pega el PAT generado
 ✅ Verás Login Succeeded! y se creará ~/.docker/config.json.
 
-#### 1.6. Instalar Python y Venv (Común para ambos entornos)
+#### Instalar Python y Venv (Común para ambos entornos)
 
 ```Bash
 sudo apt update
@@ -177,16 +172,16 @@ sudo apt install python3 python3-pip python3-venv
 
 📌 Nota: El paquete python3-venv es obligatorio para que python3 -m venv venv funcione correctamente.
 
-### 2. 📦 Clonar y preparar el proyect
+### 📦 Clonar y preparar el proyecto
 
-#### 2.1. Clona este repositorio
+####  Clona este repositorio
 
 ```Bash
 git clone [https://github.com/naesman1/LP-practica-final.git](https://github.com/naesman1/LP-practica-final.git)
 cd LP-practica-final
 ```
 
-#### 2.2. (Opcional) Probar localmente
+####  (Opcional) Probar localmente
 
 ```Bash
 python3 -m venv venv
@@ -195,7 +190,7 @@ pip install -r requirements.txt
 pytest
 ```
 
-### 3. 🧠 Modificaciones de la Aplicación
+### 🧠 Modificaciones de la Aplicación
 
 El código fuente original fue modificado para cumplir los nuevos requisitos:
 
@@ -205,7 +200,7 @@ Nueva métrica: Contador de `Prometheus` `bye_requests_total`.
 
 Nuevo test unitario: En `src/tests/app_test.py` para validar el nuevo endpoint.
 
-### 4. 🧪 Pipeline de CI/CD (GitHub Actions)
+### 🧪 Pipeline de CI/CD (GitHub Actions)
 
 El archivo ./github/workflows/ci-cd.yml define el pipeline:
 
@@ -215,17 +210,17 @@ Job `build-and-push`: Inicia sesión en `GHCR`, construye la imagen `Docker` y l
 
 📌Nota: Para usar el pipeline en tu fork, habilita los permissions de escritura para Actions en tu repositorio.
 
-### 5. ☸️ Despliegue en Kubernetes
+### ☸️ Despliegue en Kubernetes
 
 Sigue los pasos para desplegar toda la infraestructura en Minikube.
 
-#### 🪄 Paso 5.1: Iniciar Minikube
+#### 🪄  Iniciar Minikube
 
 ```Bash
 minikube start --driver=docker
 ```
 
-#### 🪄 Paso 5.2: Instalar la Stack de Monitoreo
+#### 🪄 Instalar la Stack de Monitoreo
 
 ```Bash
 helm repo add prometheus-community [https://prometheus-community.github.io/helm-charts](https://prometheus-community.github.io/helm-charts)
@@ -235,7 +230,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack --namespace m
 
 ⏱️ Espera 2–3 minutos a que todos los pods en `monitoring` estén en estado Running.
 
-#### 🪄 Paso 5.3: Crear Secreto de GHCR
+#### 🪄 Crear Secreto de GHCR
 
 Ahora que `docker login` (Paso 1.5) creó el `config.json`, este comando funcionará:
 
@@ -243,7 +238,7 @@ Ahora que `docker login` (Paso 1.5) creó el `config.json`, este comando funcion
 kubectl create secret generic ghcr-creds --from-file=.dockerconfigjson=${HOME}/.docker/config.json --type=kubernetes.io/dockerconfigjson
 ```
 
-#### 🪄 Paso 5.4: Desplegar la Aplicación y Reglas
+#### 🪄 Desplegar la Aplicación y Reglas
 
 ```Bash
 kubectl apply -f k8s/
@@ -251,11 +246,11 @@ kubectl apply -f k8s/
 
 Esto creará todos los manifiestos en la carpeta `k8s/`: el `Deployment`, `Service`, `ServiceMonitor` y, crucialmente, la `PrometheusRule`.
 
-### 6. 🔬 Verificación del Monitoreo (Prometheus)
+### 🔬 Verificación del Monitoreo (Prometheus)
 
 Antes de probar las alertas, verifica que Prometheus esté viendo tu aplicación.
 
-#### 🪄 Paso 6.1: Acceder a la UI de Prometheus
+#### 🪄 Acceder a la UI de Prometheus
 
 En una terminal nueva, inicia un `port-forward`:
 
@@ -267,23 +262,23 @@ Abre en tu navegador: `http://localhost:9090`
 
 #### 🪄 Paso 6.2: Verificar "Targets"
 
-6.2.1 En la **UI** de **Prometheus**, ve a **Status** -> **Targets**.
+En la **UI** de **Prometheus**, ve a **Status** -> **Targets**.
 
-6.2.2 Busca el endpoint `serviceMonitor/default/simple-server-servicemonitor/0`.
+Busca el endpoint `serviceMonitor/default/simple-server-servicemonitor/0`.
 
-6.2.3 El estado `(State)` debe ser **UP** (en verde). [Imagen de Prometheus UI 'Targets' page]
+El estado `(State)` debe ser **UP** (en verde). [Imagen de Prometheus UI 'Targets' page]
 
-#### 🪄 Paso 6.3: Verificar "Alerts"
+#### 🪄  Verificar "Alerts"
 
-6.3.4 En la **UI** de **Prometheus**, ve a la pestaña **Alerts**.
+En la **UI** de **Prometheus**, ve a la pestaña **Alerts**.
 
 Deberías ver tu alerta `HighCpuUsage` listada.
 
 Su estado inicial debe ser **INACTIVE** (en verde). [Imagen de Prometheus UI 'Alerts' page]
 
-### 7. 🔔 Configuración de Alertas (Prometheus + Slack)
+### 🔔 Configuración de Alertas (Prometheus + Slack)
 
-#### 🪄 Paso 7.1: Crear Canal y Webhook de Slack
+#### 🪄 Paso Crear Canal y Webhook de Slack
 
 ##### A. Crear un Workspace de Slack (si no tienes uno):
 
@@ -313,26 +308,26 @@ Haz clic en el botón **"Add Incoming WebHooks integration"**.
 
 ¡Listo! En la siguiente página, COPIA la `"Webhook URL"` **(es un secreto, empieza con `https://hooks.slack.com/`...)**.
 
-#### 🪄 Paso 7.2: Configurar Alertmanager
+#### 🪄 Configurar Alertmanager
 
-7.2.1 Abre el archivo `alertmanager.yaml` de este repositorio.
+Abre el archivo `alertmanager.yaml` de este repositorio.
 
-7.2.2 **PEGA** tu `"Webhook URL"` secreta en los dos campos que dicen **`slack_api_url: '...TU_URL_AQUI...'`**.
+**PEGA** tu `"Webhook URL"` secreta en los dos campos que dicen **`slack_api_url: '...TU_URL_AQUI...'`**.
 
-7.2.3 CAMBIA el `channel`: al nombre exacto de tu canal de Slack (ej. `#naesman-prometheus-alarms`).
+CAMBIA el `channel`: al nombre exacto de tu canal de Slack (ej. `#naesman-prometheus-alarms`).
 
-7.2.4 Aplica la configuración al clúster:
+Aplica la configuración al clúster:
 
 ```Bash
 kubectl --namespace monitoring create secret generic alertmanager-prometheus-kube-prometheus-alertmanager --from-file=alertmanager.yaml=alertmanager.yaml --dry-run=client -o yaml | kubectl apply -f -
 ```
 
-7.2.5 Reinicia Alertmanager para que cargue la nueva configuración:
+Reinicia Alertmanager para que cargue la nueva configuración:
 
 ```Bash
 kubectl --namespace monitoring rollout restart statefulset/alertmanager-prometheus-kube-prometheus-alertmanager
 ```
-#### 🧪 Paso 7.3: Probar la Alerta de CPU (Prueba de Estrés)
+#### 🧪 Probar la Alerta de CPU (Prueba de Estrés)
 
 Lanza un pod "atacante" para generar carga:
 
@@ -357,11 +352,11 @@ Recibirás una notificación **CRITICAL** en tu canal de Slack. [Imagen de una a
 
 Al detener el pod (Ctrl+C), recibirás la alerta **RESOLVED**.
 
-### 8. 📊 Dashboard de Grafana
+###  📊 Dashboard de Grafana
 
 El dashboard final se encuentra en `grafana/dashboard.json`.
 
-#### 🪄 Paso 8.1: Acceder a Grafana
+#### 🪄 Acceder a Grafana
 
 ```Bash
 # Obtener contraseña de admin
@@ -373,7 +368,7 @@ kubectl --namespace monitoring port-forward $(kubectl --namespace monitoring get
 
 Accede en el navegador: 👉 `http://localhost:3000` (Usuario: admin, Contraseña: la obtenida arriba)
 
-#### 🪄 Paso 8.2: Importar el Dashboard
+#### 🪄 Importar el Dashboard
 
 En Grafana:
 
