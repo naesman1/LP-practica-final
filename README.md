@@ -43,7 +43,6 @@ Este documento sirve como una guía completa para que cualquier usuario pueda co
 - [☸️ Despliegue en Kubernetes](#️-despliegue-en-kubernetes)
 - [🔬 Verificación del Monitoreo (Prometheus)](#-verificación-del-monitoreo-prometheus)
 - [🔔 Configuración de Alertas (Prometheus + Slack)](#-configuración-de-alertas-prometheus--slack)
-- [📷 Galería de Resultados](#-galería-de-resultados)
 - [🧾 Créditos](#-créditos)
 ---
 
@@ -514,40 +513,6 @@ Y podrás observar los datos en la gráfica
 
 ![grafana-data](assets/grafana-data.png)
 
-
-### 📷 Galería de Resultados
-
-Entregable
-
-Imagen
-
-🧪 Pipeline de Pruebas
-
-(Tu imagen aquí)
-
-🚀 Pipeline de Despliegue
-
-(Tu imagen aquí)
-
-📦 Paquete en GHCR
-
-(Tu imagen aquí)
-
-🎯 Prometheus Target UP
-
-(Tu imagen aquí)
-
-🔥 Alerta FIRING en Prometheus
-
-(Tu imagen aquí)
-
-🔔 Alerta CRITICAL en Slack
-
-(Tu imagen aquí)
-
-📈 Dashboard de Grafana
-
-(Tu imagen aquí)
 
 ### 🧾 Créditos
 
