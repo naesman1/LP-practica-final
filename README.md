@@ -517,38 +517,38 @@ Y podrás observar los datos en la gráfica
 ![grafana-data](assets/grafana-data.png)
 
 
-### 📷 Galería de Resultados
+## 📷 Galería de Resultados
 
 
 🧪 Pipeline de Pruebas
 
-![grafana-data](assets/grafana-data.png)
+![pipeline-test](assets/pipeline-test.png)
 
 🚀 Pipeline de Despliegue
 
-(Tu imagen aquí)
+![pipeline-done](assets/pipeline-done.png)
 
 📦 Paquete en GHCR
 
-(Tu imagen aquí)
+![ghrc](assets/ghrc.png)
 
 🎯 Prometheus Target UP
 
-(Tu imagen aquí)
+![Targets](assets/Targets.png)
 
 🔥 Alerta FIRING en Prometheus
 
-(Tu imagen aquí)
+![Alerts-firing](assets/Alerts-firing.png)
 
 🔔 Alerta CRITICAL en Slack
 
-(Tu imagen aquí)
+![slack-alarm-firing](assets/slack-alarm-firing.png)
 
 📈 Dashboard de Grafana
 
-(Tu imagen aquí)
+![grafana-data](assets/grafana-data.png)
 
-### 🧾 Créditos
+## 🧾 Créditos
 
 Desarrollado por Miguel Ángel Narvaiz Eslava - naesman1
 📘 Módulo: Liberando Productos – KeepCoding DevOps Bootcamp
