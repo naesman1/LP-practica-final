@@ -22,9 +22,11 @@
 
 🚀 **Práctica Final - Liberando Productos (Solución)**  
 Este repositorio contiene la solución a la práctica final del módulo **“Liberando Productos”**.  
-El proyecto original (un simple servidor FastAPI) ha sido mejorado para incluir un pipeline completo de **CI/CD**, **despliegue en Kubernetes**, **monitoreo con Prometheus**, **alertas con Alertmanager** y **visualización con Grafana**.
+El proyecto original (un servidor FastAPI) ha sido mejorado para incluir un pipeline completo de **CI/CD**, **despliegue en Kubernetes**, **monitoreo con Prometheus**, **alertas con Alertmanager** y **visualización con Grafana**.
 
 Este documento sirve como una guía completa para que cualquier usuario pueda configurar su entorno y reproducir la solución desde cero.
+
+📌Nota sobre el Proyecto Base: Este trabajo se construye a partir de un proyecto inicial proporcionado por KeepCoding. Para fines de referencia y auditoría, una copia exacta del proyecto original (tal como se recibió) se encuentra en la carpeta `./base-project` de este repositorio.
 
 ---
 
@@ -43,6 +45,7 @@ Este documento sirve como una guía completa para que cualquier usuario pueda co
 - [☸️ Despliegue en Kubernetes](#️-despliegue-en-kubernetes)
 - [🔬 Verificación del Monitoreo (Prometheus)](#-verificación-del-monitoreo-prometheus)
 - [🔔 Configuración de Alertas (Prometheus + Slack)](#-configuración-de-alertas-prometheus--slack)
+- [📷 Galería de Resultados](#-galería-de-resultados)
 - [🧾 Créditos](#-créditos)
 ---
 
@@ -513,6 +516,37 @@ Y podrás observar los datos en la gráfica
 
 ![grafana-data](assets/grafana-data.png)
 
+
+### 📷 Galería de Resultados
+
+
+🧪 Pipeline de Pruebas
+
+![grafana-data](assets/grafana-data.png)
+
+🚀 Pipeline de Despliegue
+
+(Tu imagen aquí)
+
+📦 Paquete en GHCR
+
+(Tu imagen aquí)
+
+🎯 Prometheus Target UP
+
+(Tu imagen aquí)
+
+🔥 Alerta FIRING en Prometheus
+
+(Tu imagen aquí)
+
+🔔 Alerta CRITICAL en Slack
+
+(Tu imagen aquí)
+
+📈 Dashboard de Grafana
+
+(Tu imagen aquí)
 
 ### 🧾 Créditos
 
