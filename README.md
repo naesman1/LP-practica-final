@@ -26,7 +26,7 @@ El proyecto original (un servidor FastAPI) ha sido mejorado para incluir un pipe
 
 Este documento sirve como una guía completa para que cualquier usuario pueda configurar su entorno y reproducir la solución desde cero.
 
-📌Nota sobre el Proyecto Base: Este trabajo se construye a partir de un proyecto inicial proporcionado por KeepCoding. Para fines de referencia y auditoría, una copia exacta del proyecto original (tal como se recibió) se encuentra en la carpeta `./base-project` de este repositorio.
+📌Nota sobre el Proyecto Base: Este trabajo se construye a partir de un proyecto inicial proporcionado por KeepCoding. Para fines de referencia y auditoría.
 
 ---
 
