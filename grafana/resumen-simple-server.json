@@ -32,7 +32,7 @@
   "panels": [
     {
       "datasource": {
-        "type": "prometheus",
+        "type": "prometheus-1",
         "uid": "af2yuah6lkzy8a"
       },
       "fieldConfig": {

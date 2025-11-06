@@ -92,8 +92,9 @@ Descarga desde docker.com y asegúrate de activar:
 
 ```Bash
 sudo apt update
+sudo apt install curl -y
 sudo apt install docker.io -y
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $USER && newgrp docker
 ```
 ⚠️ Cierra sesión y vuelve a iniciar para aplicar el cambio de grupo
 
@@ -127,12 +128,21 @@ sudo snap install helm --classic
 #### D. Instalar GitHub CLI (Para autenticación)
 
 ```Bash
+# Instalar gpg
 sudo apt update
 sudo apt install gpg
+
+# Descargar, de-armorear y dar permisos a la llave GPG
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+
+# Añadir el repositorio de GitHub CLI a apt
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+
+# Actualizar e instalar
 sudo apt update
 sudo apt install gh -y
+
 ```
 
 #### Autenticación CLI de GitHub (gh)
@@ -142,9 +152,25 @@ Esto es necesario para que `gh` pueda autenticarte y tengas permisos de workflow
 ```Bash
 gh auth login
 ```
-✅ Cuando te pregunte por los "scopes", marca:
-- workflow (para subir pipelines)
-- write:packages (para subir imágenes Docker/GHCR)
+What account do you want to log into? -> **GitHub.com** (Presiona Enter)
+
+What is your preferred protocol for Git operations on this host? -> (Usa las flechas) Selecciona **HTTPS** (Presiona Enter)
+
+Authenticate Git with your GitHub credentials? -> **Y** (Presiona Enter)
+
+How would you like to authenticate GitHub CLI? -> **Login with a web browser** (Presiona Enter)
+
+Copia el código de un solo uso (ej. XXXX-XXXX).
+
+Presiona Enter para abrir el navegador.
+
+Ve a la direccion: `https://github.com/login/device`
+
+Pega el `código` en el navegador y haz clic en **Continue**.
+
+¡PÁGINA DE PERMISOS CRUCIAL! Haz clic en **"Authorize GitHub"**. En la siguiente página, **DEBES** autorizar los permisos (scopes) **workflow** y **write:packages**.
+
+Una vez `autorizado`, vuelve a la terminal. Debería decir ✓ Authentication complete.
 
 ####  Autenticación del Motor de Docker (docker login)
 
@@ -177,11 +203,11 @@ sudo apt install python3 python3-pip python3-venv
 ####  Clona este repositorio
 
 ```Bash
-git clone [https://github.com/naesman1/LP-practica-final.git](https://github.com/naesman1/LP-practica-final.git)
+git clone https://github.com/naesman1/LP-practica-final.git
 cd LP-practica-final
 ```
 
-####  (Opcional) Probar localmente
+####  Probar localmente
 
 ```Bash
 python3 -m venv venv
@@ -220,15 +246,22 @@ Sigue los pasos para desplegar toda la infraestructura en Minikube.
 minikube start --driver=docker
 ```
 
+Al especificar `--driver=docker`, le estás dando la instrucción explícita de no crear una máquina virtual completa. En su lugar, le pides que ejecute el nodo de `Kubernetes` directamente dentro de un `contenedor Docker` en tu sistema.
+
 #### 🪄 Instalar la Stack de Monitoreo
 
 ```Bash
-helm repo add prometheus-community [https://prometheus-community.github.io/helm-charts](https://prometheus-community.github.io/helm-charts)
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
 ```
 
 ⏱️ Espera 2–3 minutos a que todos los pods en `monitoring` estén en estado Running.
+
+```Bash
+kubectl get pods --namespace monitoring
+```
+
 
 #### 🪄 Crear Secreto de GHCR
 
@@ -262,11 +295,11 @@ Abre en tu navegador: `http://localhost:9090`
 
 #### 🪄 Paso 6.2: Verificar "Targets"
 
-En la **UI** de **Prometheus**, ve a **Status** -> **Targets**.
+En la **UI** de **Prometheus**, ve a **Status** -> **Targets health**.
 
 Busca el endpoint `serviceMonitor/default/simple-server-servicemonitor/0`.
 
-El estado `(State)` debe ser **UP** (en verde). [Imagen de Prometheus UI 'Targets' page]
+El estado `(State)` debe ser **UP** (en verde). ![Targets](assets/Targets.png)
 
 #### 🪄  Verificar "Alerts"
 
@@ -274,7 +307,7 @@ En la **UI** de **Prometheus**, ve a la pestaña **Alerts**.
 
 Deberías ver tu alerta `HighCpuUsage` listada.
 
-Su estado inicial debe ser **INACTIVE** (en verde). [Imagen de Prometheus UI 'Alerts' page]
+Su estado inicial debe ser **INACTIVE** (en verde). ![Alerts](assets/Alerts.png)
 
 ### 🔔 Configuración de Alertas (Prometheus + Slack)
 
@@ -290,23 +323,38 @@ Sigue los pasos de registro (email, nombre del workspace, etc.).
 
 Una vez dentro de tu workspace de Slack (ya sea nuevo o existente).
 
-En la barra lateral, haz clic en el **+** al lado de `"Canales"` y selecciona `"Crear un canal"`.
+En la barra lateral, haz clic en el **+** al lado de `"Canales"` y selecciona `"Crear un nuevo canal"`.
+
+![slack-canal](assets/slack-canal.png)
 
 Dale un `nombre` (ej. naesman-prometheus-alarms).
 
-Hazlo público o privado y haz clic en **"Crear"**.
+![slack-canal-nombre](assets/slack-canal-nombre.png)
+
+Hazlo `público` o `privado` y haz clic en **"Crear"**.
+
+![slack-canal-visibilidad ](assets/slack-canal-visibilidad.png)
 
 ##### C. Generar el Webhook Entrante:
 
 En tu navegador, ve a la página de la aplicación `"Incoming WebHooks"`: `https://app.slack.com/apps/A0F7XDUAZ-incoming-webhooks`.
 
-Haz clic en el botón verde **"Add to Slack"**.
+Haz clic en el botón verde **"Agregar a Salck"**.
 
-En la página siguiente, en `"Choose a channel..."`, selecciona el canal que acabas de crear (ej. #naesman-prometheus-alarms).
+![webhook-add](assets/webhook-add.png)
+
+En la página siguiente, verifiacr que estas en tu  en `Workspace` en la equina superior derecha.
+En la  `"Selecciona canal..."`, selecciona el canal que acabas de crear (ej. #naesman-prometheus-alarms).
+
+![webhook-canal](assets/webhook-canal.png)
 
 Haz clic en el botón **"Add Incoming WebHooks integration"**.
 
+![webhook-canal-accept](assets/webhook-canal-accept.png)
+
 ¡Listo! En la siguiente página, COPIA la `"Webhook URL"` **(es un secreto, empieza con `https://hooks.slack.com/`...)**.
+
+![webhook-url](assets/webhook-url.png)
 
 #### 🪄 Configurar Alertmanager
 
@@ -329,13 +377,42 @@ kubectl --namespace monitoring rollout restart statefulset/alertmanager-promethe
 ```
 #### 🧪 Probar la Alerta de CPU (Prueba de Estrés)
 
-Lanza un pod "atacante" para generar carga:
+Lanza un pod `"atacante"` para generar carga (pueden ser 3 terminales nuevas por separado):
 
 ```Bash
+
+#En una nueva terminal 
+
 kubectl run stress-tester --image=busybox:1.28 --rm -it -- /bin/sh
 ```
 
-Una vez dentro del pod, pega este script para golpear los 3 endpoints:
+Una vez dentro del `pod`, pega este script para golpear los 3 endpoints:
+
+1. Atacar SOLO el endpoint / (main)
+
+Este script generará tráfico únicamente para el endpoint principal.
+
+```Bash
+# Lanzar 10 procesos en background
+for i in $(seq 1 10); do
+  while true; do wget -q -O- http://simple-server-service:8081/; done &
+done
+```
+
+2. Atacar SOLO el endpoint /health
+
+Este script generará tráfico únicamente para el endpoint de "health check".
+
+```Bash
+# Lanzar 10 procesos en background
+for i in $(seq 1 10); do
+  while true; do wget -q -O- http://simple-server-service:8081/health; done &
+done
+```
+
+3. Atacar SOLO el endpoint /bye
+
+Este es el script que está en el README.md, útil para probar la alerta de CPU.
 
 ```Bash
 # Lanzar 10 procesos en background
@@ -344,19 +421,50 @@ for i in $(seq 1 10); do
 done
 ```
 
+4. (Bonus) Atacar TODOS los endpoints a la vez
+
+Este es el script que usamos para depurar el dashboard de Grafana y ver las 3 líneas subir al mismo tiempo.
+
+```Bash
+# Lanzar el ataque para '/' (main) en background
+while true; do wget -q -O- http://simple-server-service:8081/; done &
+
+# Lanzar el ataque para '/health' en background
+while true; do wget -q -O- http://simple-server-service:8081/health; done &
+
+# Lanzar el ataque para '/bye' en foreground (para mantener la terminal ocupada)
+while true; do wget -q -O- http://simple-server-service:8081/bye; done
+```
+
 🔥 Observa:
 
-En la UI de Prometheus (Alerts), la alerta `HighCpuUsage` pasará a **PENDING** (amarillo) y luego a **FIRING** (rojo) después de 1 minuto.
+En la UI de Prometheus (Alerts), la alerta `HighCpuUsage` pasará a **PENDING** (amarillo) 
 
-Recibirás una notificación **CRITICAL** en tu canal de Slack. [Imagen de una alerta crítica en Slack]
+![Alerts-pending](assets/Alerts-pending.png)
 
-Al detener el pod (Ctrl+C), recibirás la alerta **RESOLVED**.
+Y luego a **FIRING** (rojo) después de unos minutos.
+
+![Alerts-firing](assets/Alerts-firing.png)
+
+Recibirás una notificación **CRITICAL** en tu canal de Slack. 
+
+![slack-alarm-firing](assets/slack-alarm-firing.png)
+
+Al detener el pod `(Ctrl+C)` o al eliminarlo, recibirás la alerta **RESOLVED**.
+
+```Bash
+kubectl delete pod stress-tester
+```
+![slack-alarm-resolved](assets/slack-alarm-resolved.png)
+
 
 ###  📊 Dashboard de Grafana
 
 El dashboard final se encuentra en `grafana/dashboard.json`.
 
 #### 🪄 Acceder a Grafana
+
+Obtener la contraseña de grafana y **COPIAR** para usarla en la UI.
 
 ```Bash
 # Obtener contraseña de admin
@@ -372,9 +480,40 @@ Accede en el navegador: 👉 `http://localhost:3000` (Usuario: admin, Contraseñ
 
 En Grafana:
 
+Ir **Connections** -> **Add New Connection** -> Seleccionar **Prometheus** 
+
+```Bash
+#Poner nombre en este ejemplo: prometheus-1
+
+#En Connection, prometheus server URL:
+ 
+http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090
+
+```
+![grafana-data-source](assets/grafana-data-source.png)
+
+Dar clic en **Save & test** y veras el mensaje de `Successfully queried the Prometheus API.`
+
+![grafana-data-success](assets/grafana-data-success.png)
+
 Ve a Dashboards → **New** → **Import**.
 
 Sube o pega el contenido del archivo `grafana/dashboard.json`.
+
+Clic en el boton `Edit` -> seleccionar la vista `Llamadas a Endpoints por Segundos` y oprimir el boton `e`
+
+En la parte de `Absolute time range` seleccionar `Time zone` `UTC` y luego `Apply time range`
+
+![grafana-time-range](assets/grafana-time-range.png)
+
+Y en Data Source `prometheus-1` y luego `Save dashboard`
+
+![grafana-save](assets/grafana-save.png)
+
+Y podrás observar los datos en la gráfica 
+
+![grafana-data](assets/grafana-data.png)
+
 
 ### 📷 Galería de Resultados
 
