@@ -1,46 +1,70 @@
 global:
   resolve_timeout: 5m
-  slack_api_url: 'https://hooks.slack.com/services/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'
+  # URL del Webhook de Slack (reemplaza con la tuya)
+  slack_api_url: 'https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXX'
 
 route:
-  group_by: ['job']
-  group_wait: 30s
-  group_interval: 5m
-  repeat_interval: 12h
-  receiver: 'slack' # Receptor por defecto
+  group_by: ['alertname', 'job', 'severity']
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 10m
+  receiver: 'slack'
   routes:
-  - match:
-      alertname: Watchdog
-    receiver: 'null' # Ignora la alerta 'Watchdog'
-  
-  # 2. Ruta para alertas CRÍTICAS
-  - match:
-      severity: 'critical'
-    receiver: 'slack-critical' # Las envía al receptor de Slack
-    
+    # Ignorar alertas de Watchdog (prueba interna)
+    - match:
+        alertname: Watchdog
+      receiver: 'null'
+
+    # Canal para alertas críticas
+    - match:
+        severity: 'critical'
+      receiver: 'slack-critical'
+
 receivers:
-- name: 'null'
+  # Receptor nulo (para Watchdog u otras alertas de prueba)
+  - name: 'null'
 
-# 3. Configuración del receptor de Slack
-- name: 'slack-critical'
-  slack_configs:
-  - channel: '#todo-naesman1-prometheus-alarms' 
-    send_resolved: true # Enviar alertas de 'Resuelto'
-    # Plantilla de mensaje
-    title: ':rotating_light: [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }} ({{ .CommonLabels.severity }})'
-    text: >-
-      {{ range .Alerts -}}
-      *Alerta:* `{{ .Labels.alertname }}`
-      *Descripción:* {{ .Annotations.description }}
-      *Detalles:*
-      `{{ .Labels.container }}@{{ .Labels.pod }}`
-      {{ end }}
+  # 🔴 Canal para alertas críticas
+  - name: 'slack-critical'
+    slack_configs:
+      - slack_api_url: 'https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXX'
+        channel: '#naesman-prometheus-alarms'
+        send_resolved: true
+        title: >
+          {{ if eq .Status "firing" }}
+          🚨 [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }} ({{ .CommonLabels.severity | toUpper }})
+          {{ else }}
+          ✅ [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }} ({{ .CommonLabels.severity | toUpper }})
+          {{ end }}
+        text: >-
+          {{ range .Alerts -}}
+          *Estado:* `{{ .Status }}`
+          *Alerta:* `{{ .Labels.alertname }}`
+          *Severidad:* `{{ .Labels.severity }}`
+          *Descripción:* {{ .Annotations.description }}
+          {{ if .Labels.pod }}*Pod:* `{{ .Labels.pod }}`{{ end }}
+          {{ if .Labels.container }}*Contenedor:* `{{ .Labels.container }}`{{ end }}
+          {{ if .Labels.namespace }}*Namespace:* `{{ .Labels.namespace }}`{{ end }}
+          {{ if .Labels.instance }}*Instancia:* `{{ .Labels.instance }}`{{ end }}
+          {{ if eq .Status "resolved" }}🟢 *La alerta ha sido resuelta.*{{ end }}
+          {{ end }}
 
-# Receptor genérico (opcional)
-- name: 'slack'
-  slack_configs:
-  - channel: '#todo-naesman1-prometheus-alarms' 
-    send_resolved: true
-    title: 'INFO: {{ .CommonLabels.alertname }}'
-    text: '{{ .CommonAnnotations.description }}'
-
+  # 🔵 Canal para alertas informativas o de nivel normal
+  - name: 'slack'
+    slack_configs:
+      - slack_api_url: 'https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXX'
+        channel: '#naesman-prometheus-alarms'
+        send_resolved: true
+        title: >
+          {{ if eq .Status "firing" }}
+          ℹ️ [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}
+          {{ else }}
+          ✅ [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}
+          {{ end }}
+        text: >-
+          {{ range .Alerts -}}
+          *Estado:* `{{ .Status }}`
+          *Descripción:* {{ .Annotations.description }}
+          {{ if .Labels.pod }}*Pod:* `{{ .Labels.pod }}`{{ end }}
+          {{ if eq .Status "resolved" }}🟢 *La alerta ha sido resuelta.*{{ end }}
+          {{ end }}

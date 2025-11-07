@@ -345,7 +345,7 @@ Haz clic en el botón verde **"Agregar a Slack"**.
 
 ![webhook-add](assets/webhook-add.png)
 
-En la página siguiente, verificar que estas en tu `Workspace` en la equina superior derecha.
+En la página siguiente, verificar que estás en tu `Workspace` en la equina superior derecha.
 En la  `"Selecciona canal..."`, selecciona el canal que acabas de crear (ej. #naesman-prometheus-alarms).
 
 ![webhook-canal](assets/webhook-canal.png)
@@ -388,7 +388,7 @@ Lanza un pod `"atacante"` para generar carga (pueden ser 3 terminales nuevas por
 kubectl run stress-tester --image=busybox:1.28 --rm -it -- /bin/sh
 ```
 
-Una vez dentro del `pod`, pega este script para golpear los 3 endpoints:
+Una vez dentro del `pod`, pega este script para golpear un endpoint, Se pueden crear 3 pods y correr por separado los comandos para golpear todos los endpoints al mismo tiempo:
 
 1. Atacar SOLO el endpoint / (main)
 
@@ -397,7 +397,7 @@ Este script generará tráfico únicamente para el endpoint principal.
 ```Bash
 # Lanzar 10 procesos en background
 for i in $(seq 1 10); do
-  while true; do wget -q -O- http://simple-server-service:8081/; done &
+  while true; do wget -q -O- http://simple-server-service:8081/; done 
 done
 ```
 
@@ -408,7 +408,7 @@ Este script generará tráfico únicamente para el endpoint de "health check".
 ```Bash
 # Lanzar 10 procesos en background
 for i in $(seq 1 10); do
-  while true; do wget -q -O- http://simple-server-service:8081/health; done &
+  while true; do wget -q -O- http://simple-server-service:8081/health; done 
 done
 ```
 
@@ -419,23 +419,8 @@ Este es el script que está en el README.md, útil para probar la alerta de CPU.
 ```Bash
 # Lanzar 10 procesos en background
 for i in $(seq 1 10); do
-  while true; do wget -q -O- http://simple-server-service:8081/bye; done &
-done
-```
-
-4. (Bonus) Atacar TODOS los endpoints a la vez
-
-Este es el script que usamos para depurar el dashboard de Grafana y ver las 3 líneas subir al mismo tiempo.
-
-```Bash
-# Lanzar el ataque para '/' (main) en background
-while true; do wget -q -O- http://simple-server-service:8081/; done &
-
-# Lanzar el ataque para '/health' en background
-while true; do wget -q -O- http://simple-server-service:8081/health; done &
-
-# Lanzar el ataque para '/bye' en foreground (para mantener la terminal ocupada)
-while true; do wget -q -O- http://simple-server-service:8081/bye; done
+  while true; do wget -q -O- http://simple-server-service:8081/bye; done
+done 
 ```
 
 🔥 Observa:
