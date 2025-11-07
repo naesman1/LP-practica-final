@@ -236,7 +236,7 @@ Job `test`: Instala Python 3.11, dependencias y ejecuta `pytest --cov`.
 
 Job `build-and-push`: Inicia sesión en `GHCR`, construye la imagen `Docker` y la sube al registro.
 
-📌Nota: Para usar el pipeline en tu fork, habilita los permissions de escritura para Actions en tu repositorio.
+📌Nota: Para usar el pipeline en tu fork, habilita los permisos de escritura para `Github Actions` en tu repositorio.
 
 ### ☸️ Despliegue en Kubernetes
 
@@ -341,11 +341,11 @@ Hazlo `público` o `privado` y haz clic en **"Crear"**.
 
 En tu navegador, ve a la página de la aplicación `"Incoming WebHooks"`: `https://app.slack.com/apps/A0F7XDUAZ-incoming-webhooks`.
 
-Haz clic en el botón verde **"Agregar a Salck"**.
+Haz clic en el botón verde **"Agregar a Slack"**.
 
 ![webhook-add](assets/webhook-add.png)
 
-En la página siguiente, verifiacr que estas en tu  en `Workspace` en la equina superior derecha.
+En la página siguiente, verificar que estas en tu `Workspace` en la equina superior derecha.
 En la  `"Selecciona canal..."`, selecciona el canal que acabas de crear (ej. #naesman-prometheus-alarms).
 
 ![webhook-canal](assets/webhook-canal.png)
@@ -494,7 +494,7 @@ http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090
 ```
 ![grafana-data-source](assets/grafana-data-source.png)
 
-Dar clic en **Save & test** y veras el mensaje de `Successfully queried the Prometheus API.`
+Dar clic en **Save & test** y verás el mensaje de `Successfully queried the Prometheus API.`
 
 ![grafana-data-success](assets/grafana-data-success.png)
 
@@ -502,7 +502,7 @@ Ve a Dashboards → **New** → **Import**.
 
 Sube o pega el contenido del archivo `grafana/dashboard.json`.
 
-Clic en el boton `Edit` -> seleccionar la vista `Llamadas a Endpoints por Segundos` y oprimir el boton `e`
+Clic en el boton `Edit` -> seleccionar la vista `Llamadas a Endpoints por Segundos` y oprimir el botón `e`
 
 En la parte de `Absolute time range` seleccionar `Time zone` `UTC` y luego `Apply time range`
 
