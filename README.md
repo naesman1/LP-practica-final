@@ -437,13 +437,7 @@ Recibirás una notificación **CRITICAL** en tu canal de Slack.
 
 ![slack-alarm-firing](assets/slack-alarm-firing.png)
 
-Al detener el pod `(Ctrl+C)` o al eliminarlo, recibirás la alerta **RESOLVED**.
-
-```Bash
-kubectl delete pod stress-tester
-```
-![slack-alarm-resolved](assets/slack-alarm-resolved.png)
-
+Corta el proceso de estress con `(Ctrl+C)` o elimina el pod.
 
 ###  📊 Dashboard de Grafana
 
